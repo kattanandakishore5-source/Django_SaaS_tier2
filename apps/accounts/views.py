@@ -353,13 +353,30 @@ class APIKeyViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return APIKey.objects.filter(user=self.request.user)
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        
+        data = serializer.data
+        if hasattr(serializer.instance, '_raw_key'):
+            data['raw_key'] = serializer.instance._raw_key
+            
+        return Response(data, status=status.HTTP_201_CREATED, headers=headers)
+
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
     @action(detail=True, methods=['post'])
     def regenerate(self, request, pk=None):
         """Regenerate API key"""
+        import hashlib
         api_key = self.get_object()
-        api_key.key = APIKey.generate_key()
+        raw_key = APIKey.generate_key()
+        api_key._raw_key = raw_key
+        api_key.key = hashlib.sha256(raw_key.encode()).hexdigest()
         api_key.save()
-        return Response(APIKeySerializer(api_key).data)
+        data = APIKeySerializer(api_key).data
+        data['raw_key'] = raw_key
+        return Response(data)

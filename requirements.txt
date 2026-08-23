@@ -18,7 +18,4 @@ stripe==7.4.0
 django-htmx==1.17.2
 django-extensions==3.2.3
 drf-yasg==1.21.7
-channels==4.0.0
-daphne==4.0.0
-channels-redis==4.1.0
 bleach==6.1.0

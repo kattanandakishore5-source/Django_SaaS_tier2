@@ -126,7 +126,9 @@ class APIKey(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.key:
-            self.key = self.generate_key()
+            raw_key = self.generate_key()
+            self._raw_key = raw_key
+            self.key = hashlib.sha256(raw_key.encode()).hexdigest()
         super().save(*args, **kwargs)
 
     def __str__(self):

@@ -35,9 +35,11 @@ class AuditLoggingMiddleware(MiddlewareMixin):
         # Log to AuditLog
         try:
             action = 'view' if request.method == 'GET' else 'update' if request.method in ['PUT', 'PATCH'] else 'create' if request.method == 'POST' else 'delete' if request.method == 'DELETE' else 'view'
+            user_id = request.user.id if request.user.is_authenticated else None
 
-            AuditLog.objects.create(
-                user=request.user if request.user.is_authenticated else None,
+            from .tasks import log_audit_action_async
+            log_audit_action_async.delay(
+                user_id=user_id,
                 action=action,
                 method=request.method,
                 path=request.path,

@@ -69,9 +69,14 @@ class DashboardViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['get'])
     def stats(self, request):
         """Get dashboard statistics"""
-        total_users = CustomUser.objects.count()
-        active_users = CustomUser.objects.filter(is_active=True).count()
-        verified_users = CustomUser.objects.filter(is_verified=True).count()
+        stats = CustomUser.objects.aggregate(
+            total=Count('id'),
+            active=Count('id', filter=Q(is_active=True)),
+            verified=Count('id', filter=Q(is_verified=True))
+        )
+        total_users = stats['total']
+        active_users = stats['active']
+        verified_users = stats['verified']
 
         # Users by role
         users_by_role = CustomUser.objects.values('role').annotate(count=Count('id'))
@@ -102,7 +107,7 @@ class DashboardViewSet(viewsets.ViewSet):
         from django.db.models.functions import TruncDate
         signups = CustomUser.objects.filter(
             created_at__range=[start_date, end_date]
-        ).extra(select={'date': 'DATE(created_at)'}).values('date').annotate(count=Count('id')).order_by('date')
+        ).annotate(date=TruncDate('created_at')).values('date').annotate(count=Count('id')).order_by('date')
 
         labels = [s['date'].strftime('%Y-%m-%d') for s in signups]
         data = [s['count'] for s in signups]
@@ -122,7 +127,7 @@ class DashboardViewSet(viewsets.ViewSet):
         from django.db.models.functions import TruncDate
         activities = AuditLog.objects.filter(
             created_at__range=[start_date, end_date]
-        ).extra(select={'date': 'DATE(created_at)'}).values('date').annotate(count=Count('id')).order_by('date')
+        ).annotate(date=TruncDate('created_at')).values('date').annotate(count=Count('id')).order_by('date')
 
         labels = [a['date'].strftime('%Y-%m-%d') for a in activities]
         data = [a['count'] for a in activities]
