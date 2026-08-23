@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: django_admin_pro_db
+    environment:
+      POSTGRES_DB: django_admin_pro
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: django_admin_pro_redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    container_name: django_admin_pro_web
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - DB_NAME=django_admin_pro
+      - DB_USER=admin
+      - DB_PASSWORD=admin123
+      - DB_HOST=db
+      - DB_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=your-secret-key-change-in-production
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery:
+    build: .
+    container_name: django_admin_pro_celery
+    command: celery -A config worker -l info
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=True
+      - DB_NAME=django_admin_pro
+      - DB_USER=admin
+      - DB_PASSWORD=admin123
+      - DB_HOST=db
+      - DB_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=your-secret-key-change-in-production
+    depends_on:
+      - db
+      - redis
+      - web
+
+  celery-beat:
+    build: .
+    container_name: django_admin_pro_celery_beat
+    command: celery -A config beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=True
+      - DB_NAME=django_admin_pro
+      - DB_USER=admin
+      - DB_PASSWORD=admin123
+      - DB_HOST=db
+      - DB_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=your-secret-key-change-in-production
+    depends_on:
+      - db
+      - redis
+      - web
+
+volumes:
+  postgres_data:

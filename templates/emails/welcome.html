@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+        .content { background: #f9fafb; padding: 30px; border: 1px solid #e5e7eb; }
+        .footer { background: #f3f4f6; padding: 20px; text-align: center; font-size: 12px; color: #6b7280; border-radius: 0 0 8px 8px; }
+        .button { background: #3b82f6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome to Django Admin Pro!</h1>
+        </div>
+        <div class="content">
+            <p>Hi {{ name }},</p>
+            <p>Thank you for signing up for Django Admin Pro. We're excited to have you on board!</p>
+            <p>Your account is now active and ready to use. You can access your dashboard at:</p>
+            <a href="{{ dashboard_url }}" class="button">Go to Dashboard</a>
+            <p><strong>Next Steps:</strong></p>
+            <ul>
+                <li>Complete your profile</li>
+                <li>Enable two-factor authentication for security</li>
+                <li>Explore the dashboard features</li>
+            </ul>
+            <p>If you have any questions, feel free to reach out to our support team.</p>
+            <p>Best regards,<br>The Django Admin Pro Team</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2024 Django Admin Pro. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

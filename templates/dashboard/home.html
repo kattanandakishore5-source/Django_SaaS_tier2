@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Metrics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" hx-get="/api/dashboard/stats/" hx-trigger="load">
+        <!-- Card Skeleton/Placeholder -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Total Users</p>
+                    <p class="text-3xl font-bold mt-2">-</p>
+                </div>
+                <div class="p-3 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
+                    <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-2a6 6 0 0112 0v2zm0 0h6v-2a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Active Users</p>
+                    <p class="text-3xl font-bold mt-2">-</p>
+                </div>
+                <div class="p-3 bg-green-100 dark:bg-green-900/20 rounded-lg">
+                    <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Verified Users</p>
+                    <p class="text-3xl font-bold mt-2">-</p>
+                </div>
+                <div class="p-3 bg-purple-100 dark:bg-purple-900/20 rounded-lg">
+                    <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m7 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Signups (30d)</p>
+                    <p class="text-3xl font-bold mt-2">-</p>
+                </div>
+                <div class="p-3 bg-orange-100 dark:bg-orange-900/20 rounded-lg">
+                    <svg class="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7H7v12h6V7z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Signups Chart -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+            <h3 class="text-lg font-semibold mb-4">User Signups (6 months)</h3>
+            <canvas id="signupsChart"></canvas>
+        </div>
+
+        <!-- Role Distribution Chart -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+            <h3 class="text-lg font-semibold mb-4">Users by Role</h3>
+            <canvas id="rolesChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold">Recent Activity</h3>
+            <a href="/dashboard/audit/" class="text-blue-600 dark:text-blue-400 text-sm hover:underline">View All</a>
+        </div>
+        <div class="overflow-x-auto" hx-get="/api/dashboard/recent-activity/?limit=5" hx-trigger="load">
+            <table class="w-full text-sm">
+                <thead class="border-b border-gray-200 dark:border-gray-700">
+                    <tr>
+                        <th class="text-left py-3 px-4 font-semibold">User</th>
+                        <th class="text-left py-3 px-4 font-semibold">Action</th>
+                        <th class="text-left py-3 px-4 font-semibold">Object</th>
+                        <th class="text-left py-3 px-4 font-semibold">Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b border-gray-200 dark:border-gray-700">
+                        <td colspan="4" class="py-6 text-center text-gray-500">Loading...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Load charts
+    fetch('/api/dashboard/chart-signups/?months=6')
+        .then(r => r.json())
+        .then(data => {
+            new Chart(document.getElementById('signupsChart'), {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Signups',
+                        data: data.data,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        });
+
+    fetch('/api/dashboard/chart-role-distribution/')
+        .then(r => r.json())
+        .then(data => {
+            new Chart(document.getElementById('rolesChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        data: data.data,
+                        backgroundColor: ['#3b82f6', '#8b5cf6', '#10b981'],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        });
+</script>
+{% endblock %}

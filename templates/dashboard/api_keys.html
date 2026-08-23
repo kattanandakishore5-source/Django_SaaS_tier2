@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block page_title %}API Keys{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex justify-between items-center">
+        <div>
+            <h2 class="text-2xl font-bold">API Keys</h2>
+            <p class="text-gray-600 dark:text-gray-400 mt-1">Manage your API keys for programmatic access</p>
+        </div>
+        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700" x-data x-on:click="document.getElementById('createModal').classList.remove('hidden')">
+            + Generate New Key
+        </button>
+    </div>
+
+    <!-- API Keys List -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-700">
+                    <tr>
+                        <th class="text-left py-4 px-6 font-semibold">Name</th>
+                        <th class="text-left py-4 px-6 font-semibold">Key</th>
+                        <th class="text-left py-4 px-6 font-semibold">Created</th>
+                        <th class="text-left py-4 px-6 font-semibold">Last Used</th>
+                        <th class="text-center py-4 px-6 font-semibold">Status</th>
+                        <th class="text-center py-4 px-6 font-semibold">Actions</th>
+                    </tr>
+                </thead>
+                <tbody hx-get="/api/auth/api-keys/" hx-trigger="load">
+                    <tr class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                        <td class="py-4 px-6">
+                            <div class="flex items-center gap-2">
+                                <span class="font-medium">Production API</span>
+                            </div>
+                        </td>
+                        <td class="py-4 px-6">
+                            <div class="flex items-center gap-2">
+                                <code class="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-xs font-mono">sk_live_••••••••••••••••</code>
+                                <button class="text-blue-600 hover:text-blue-700 text-xs">Copy</button>
+                            </div>
+                        </td>
+                        <td class="py-4 px-6 text-gray-600 dark:text-gray-400">Dec 1, 2024</td>
+                        <td class="py-4 px-6 text-gray-600 dark:text-gray-400">1 minute ago</td>
+                        <td class="text-center py-4 px-6">
+                            <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                Active
+                            </span>
+                        </td>
+                        <td class="text-center py-4 px-6">
+                            <button class="text-blue-600 hover:text-blue-700 text-sm">Regenerate</button>
+                            <span class="text-gray-300 mx-2">|</span>
+                            <button class="text-red-600 hover:text-red-700 text-sm">Revoke</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Usage Info -->
+    <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+        <h4 class="font-semibold text-blue-900 dark:text-blue-400 mb-2">API Documentation</h4>
+        <p class="text-sm text-blue-800 dark:text-blue-300 mb-3">
+            Use your API key to authenticate requests. Include it in the Authorization header:
+        </p>
+        <code class="bg-white dark:bg-gray-800 px-4 py-2 rounded text-xs font-mono block text-gray-900 dark:text-gray-100">
+            Authorization: Bearer YOUR_API_KEY
+        </code>
+        <p class="text-sm text-blue-800 dark:text-blue-300 mt-3">
+            <a href="/api/docs/" class="underline hover:no-underline">View full API documentation →</a>
+        </p>
+    </div>
+</div>
+
+<!-- Create Modal -->
+<div id="createModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md">
+        <h3 class="text-xl font-bold mb-4">Generate New API Key</h3>
+        <form class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium mb-2">Key Name</label>
+                <input type="text" placeholder="e.g., Production API" class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 rounded-lg">
+            </div>
+            <div class="flex gap-2 justify-end">
+                <button type="button" class="px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                        x-on:click="document.getElementById('createModal').classList.add('hidden')">
+                    Cancel
+                </button>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    Generate
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Django Admin Pro{% endblock %}</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {}
+            }
+        }
+    </script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+    <style>
+        :root {
+            --color-primary: #3b82f6;
+            --color-secondary: #8b5cf6;
+            --color-success: #10b981;
+            --color-danger: #ef4444;
+            --color-warning: #f59e0b;
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" 
+      x-init="darkMode ? document.documentElement.classList.add('dark') : ''"
+      :class="{ 'dark': darkMode }"
+      class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
+
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        {% include 'sidebar.html' %}
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Bar -->
+            <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex justify-between items-center px-6 py-4">
+                    <div>
+                        <h1 class="text-2xl font-bold">{% block page_title %}Dashboard{% endblock %}</h1>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <!-- Theme Toggle -->
+                        <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)"
+                                class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <svg x-show="!darkMode" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                            </svg>
+                            <svg x-show="darkMode" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v2a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.536l-2.071-2.072a6 6 0 111.414-1.414l2.071 2.071a1 1 0 01-1.414 1.415zM15.5 1a1 1 0 011 1v2a1 1 0 11-2 0V2a1 1 0 011-1zM4.5 15a1 1 0 01-1-1v-2a1 1 0 112 0v2a1 1 0 01-1 1z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+
+                        <!-- Global Search -->
+                        <div class="relative w-64">
+                            <input type="text" placeholder="Search..." 
+                                   class="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                   hx-get="/api/search/" hx-trigger="keyup changed delay:500ms" hx-target="#search-results">
+                            <div id="search-results" class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-50"></div>
+                        </div>
+
+                        <!-- User Menu -->
+                        <div x-data="{ open: false }" class="relative">
+                            <button @click="open = !open" class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <img src="{% if user.avatar %}{{ user.avatar.url }}{% else %}https://ui-avatars.com/api/?name={{ user.email }}{% endif %}" 
+                                     alt="Avatar" class="w-8 h-8 rounded-full">
+                                <span class="text-sm font-medium">{{ user.first_name|default:user.email }}</span>
+                            </button>
+                            <div x-show="open" @click.outside="open = false"
+                                 class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-50 py-2">
+                                <a href="/dashboard/profile/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">Profile</a>
+                                <a href="/dashboard/settings/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">Settings</a>
+                                <hr class="my-2 border-gray-200 dark:border-gray-700">
+                                <a href="/api/auth/logout/" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <main class="flex-1 overflow-auto">
+                <div class="p-6">
+                    {% if messages %}
+                        <div class="mb-4">
+                            {% for message in messages %}
+                                <div class="p-4 mb-4 text-sm {% if message.tags %}{{ message.tags }}{% else %}bg-blue-100 text-blue-700{% endif %} rounded-lg">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% block content %}{% endblock %}
+                </div>
+            </main>
+        </div>
+    </div>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

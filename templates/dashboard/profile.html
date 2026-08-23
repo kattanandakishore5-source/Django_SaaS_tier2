@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8">
+        <h2 class="text-2xl font-bold mb-6">My Profile</h2>
+
+        <form class="space-y-6">
+            <!-- Avatar -->
+            <div>
+                <label class="block text-sm font-medium mb-2">Avatar</label>
+                <div class="flex items-center gap-4">
+                    <img src="https://ui-avatars.com/api/?name={{ user.email }}" alt="Avatar" class="w-16 h-16 rounded-full">
+                    <input type="file" accept="image/*" class="px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg">
+                </div>
+            </div>
+
+            <!-- Name -->
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2">First Name</label>
+                    <input type="text" value="{{ user.first_name }}" class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Last Name</label>
+                    <input type="text" value="{{ user.last_name }}" class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 rounded-lg">
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div>
+                <label class="block text-sm font-medium mb-2">Email</label>
+                <input type="email" value="{{ user.email }}" disabled class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-700 rounded-lg cursor-not-allowed">
+                <p class="text-xs text-gray-500 mt-1">Email cannot be changed</p>
+            </div>
+
+            <!-- Bio -->
+            <div>
+                <label class="block text-sm font-medium mb-2">Bio</label>
+                <textarea rows="4" class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 rounded-lg">{{ user.bio }}</textarea>
+            </div>
+
+            <!-- Phone -->
+            <div>
+                <label class="block text-sm font-medium mb-2">Phone Number</label>
+                <input type="tel" value="{{ user.phone_number }}" class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 rounded-lg">
+            </div>
+
+            <!-- Save Button -->
+            <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
+                Save Changes
+            </button>
+        </form>
+
+        <!-- Divider -->
+        <hr class="my-8 border-gray-200 dark:border-gray-700">
+
+        <!-- Security Section -->
+        <div>
+            <h3 class="text-xl font-bold mb-4">Security</h3>
+
+            <!-- Change Password -->
+            <div class="space-y-4 mb-6">
+                <h4 class="font-semibold">Change Password</h4>
+                <form class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Current Password</label>
+                        <input type="password" class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">New Password</label>
+                        <input type="password" class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Confirm Password</label>
+                        <input type="password" class="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 rounded-lg">
+                    </div>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                        Update Password
+                    </button>
+                </form>
+            </div>
+
+            <!-- 2FA -->
+            <div class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h4 class="font-semibold">Two-Factor Authentication</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                            Status: {% if user.two_factor_enabled %}<span class="text-green-600">Enabled</span>{% else %}<span class="text-gray-600">Disabled</span>{% endif %}
+                        </p>
+                    </div>
+                    <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                        {% if user.two_factor_enabled %}Disable{% else %}Enable{% endif %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

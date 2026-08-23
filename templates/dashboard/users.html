@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Users Management{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Toolbar -->
+    <div class="flex justify-between items-center">
+        <h2 class="text-2xl font-bold">Users</h2>
+        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+            + Add User
+        </button>
+    </div>
+
+    <!-- Users Table -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-700">
+                    <tr>
+                        <th class="text-left py-4 px-6 font-semibold">Email</th>
+                        <th class="text-left py-4 px-6 font-semibold">Name</th>
+                        <th class="text-left py-4 px-6 font-semibold">Role</th>
+                        <th class="text-left py-4 px-6 font-semibold">Status</th>
+                        <th class="text-left py-4 px-6 font-semibold">Joined</th>
+                        <th class="text-center py-4 px-6 font-semibold">Actions</th>
+                    </tr>
+                </thead>
+                <tbody hx-get="/api/users/" hx-trigger="load">
+                    {% for user in users %}
+                    <tr class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                        <td class="py-4 px-6">
+                            <div class="flex items-center gap-3">
+                                <img src="https://ui-avatars.com/api/?name={{ user.email }}" alt="Avatar" class="w-8 h-8 rounded-full">
+                                <span>{{ user.email }}</span>
+                            </div>
+                        </td>
+                        <td class="py-4 px-6">{{ user.first_name }} {{ user.last_name }}</td>
+                        <td class="py-4 px-6">
+                            <span class="px-3 py-1 rounded-full text-xs font-medium
+                                {% if user.role == 'owner' %}bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400
+                                {% elif user.role == 'manager' %}bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400
+                                {% else %}bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400
+                                {% endif %}">
+                                {{ user.role|upper }}
+                            </span>
+                        </td>
+                        <td class="py-4 px-6">
+                            <span class="px-3 py-1 rounded-full text-xs font-medium
+                                {% if user.is_active %}bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400
+                                {% else %}bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400
+                                {% endif %}">
+                                {% if user.is_active %}Active{% else %}Inactive{% endif %}
+                            </span>
+                        </td>
+                        <td class="py-4 px-6 text-gray-600 dark:text-gray-400">{{ user.created_at|date:'M d, Y' }}</td>
+                        <td class="py-4 px-6 text-center">
+                            <button class="text-blue-600 hover:text-blue-700 text-sm">Edit</button>
+                            <span class="text-gray-300 mx-2">|</span>
+                            <button class="text-red-600 hover:text-red-700 text-sm">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
