@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'apps.dashboard',
     'apps.audit',
     'apps.core',
+    'apps.billing',
 ]
 
 MIDDLEWARE = [
@@ -139,7 +140,8 @@ CELERY_TIMEZONE = 'UTC'
 CELERY_ENABLE_UTC = True
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes
-CELERY_TASK_ALWAYS_EAGER = True
+CELERY_TASK_ALWAYS_EAGER = config('CELERY_TASK_ALWAYS_EAGER', default=False, cast=bool)
+CELERY_TASK_STORE_EAGER_RESULT = config('CELERY_TASK_ALWAYS_EAGER', default=False, cast=bool)
 
 # Email Configuration
 EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
