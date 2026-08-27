@@ -53,18 +53,41 @@
         <h3 class="text-xl font-bold mb-6">Billing & Subscription</h3>
 
         <div class="space-y-6">
+            {% if subscription %}
             <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                 <div class="flex justify-between items-start">
                     <div>
-                        <h4 class="font-semibold text-blue-900 dark:text-blue-400">Professional Plan</h4>
-                        <p class="text-sm text-blue-800 dark:text-blue-300 mt-1">$99/month</p>
-                        <p class="text-sm text-blue-700 dark:text-blue-400 mt-2">Next billing date: January 15, 2025</p>
+                        <h4 class="font-semibold text-blue-900 dark:text-blue-400 capitalize">{{ subscription.plan_name }} Plan</h4>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="text-sm text-blue-800 dark:text-blue-300">Status:</span>
+                            <span class="px-2 py-0.5 text-xs font-semibold rounded-full 
+                                {% if subscription.status == 'active' %}bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400
+                                {% elif subscription.status == 'canceled' %}bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400
+                                {% else %}bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400{% endif %} capitalize">
+                                {{ subscription.status }}
+                            </span>
+                        </div>
+                        {% if subscription.current_period_end %}
+                        <p class="text-sm text-blue-700 dark:text-blue-400 mt-2">Next billing date: {{ subscription.current_period_end|date:"F d, Y" }}</p>
+                        {% endif %}
                     </div>
-                    <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                         Manage Subscription
                     </button>
                 </div>
             </div>
+            {% else %}
+            <div class="p-6 bg-gray-50 dark:bg-gray-900/40 rounded-lg border border-dashed border-gray-300 dark:border-gray-700 text-center">
+                <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                </svg>
+                <h4 class="font-semibold text-gray-900 dark:text-white mt-2">No active subscription</h4>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 mb-4">Choose a plan to unlock premium features and start building.</p>
+                <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition-all duration-200">
+                    Subscribe Now
+                </button>
+            </div>
+            {% endif %}
 
             <div>
                 <h4 class="font-semibold mb-3">Billing History</h4>

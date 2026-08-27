@@ -38,7 +38,11 @@ def dashboard_audit(request):
 @login_required
 def dashboard_settings(request):
     """Settings page"""
-    return render(request, 'dashboard/settings.html')
+    subscription = getattr(request.user, 'subscription', None)
+    context = {
+        'subscription': subscription,
+    }
+    return render(request, 'dashboard/settings.html', context)
 
 
 @login_required

@@ -77,6 +77,16 @@ django-admin-pro/
 │       │   └── migrations/
 │       │       └── __init__.py
 │       │
+│       ├── billing/                 # Subscription & billing backend (Stripe webhook ready)
+│       │   ├── models.py            # Subscription model
+│       │   ├── webhooks.py          # Stripe webhook view
+│       │   ├── urls.py              # Webhook URL routing
+│       │   ├── apps.py              # App configuration
+│       │   ├── __init__.py
+│       │   └── migrations/
+│       │       ├── 0001_initial.py  # Initial subscription migrations
+│       │       └── __init__.py
+│       │
 │       ├── core/                    # Core utilities & helpers
 │       │   ├── utils.py             # Email, export, search, pagination helpers
 │       │   ├── decorators.py        # @role_required, @owner_required RBAC

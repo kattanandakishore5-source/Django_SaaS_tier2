@@ -19,6 +19,8 @@
 - **Responsive design** - Mobile-first with Tailwind CSS
 
 ### 🔍 Advanced Features
+- **Enterprise-grade Service Layer architecture (`services.py`)** - Separation of business logic from views
+- **Stripe Webhook ready Billing app** - Pre-wired model, webhook endpoint, and subscription state tracking
 - **System audit logging** - Track all CRUD operations with middleware
 - **One-click data exports** - CSV/JSON export for any data table
 - **Global search** - Search across multiple models via HTMX
@@ -48,6 +50,7 @@ django-admin-pro/
 │   ├── accounts/           # User authentication & profiles
 │   ├── dashboard/          # Dashboard views & metrics
 │   ├── audit/              # Audit logging
+│   ├── billing/            # Subscription & billing backend (Stripe webhook ready)
 │   └── core/               # Utilities, decorators, permissions
 ├── templates/              # HTML templates (Tailwind + Alpine.js)
 ├── static/                 # CSS, JavaScript, images
