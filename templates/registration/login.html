@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In — Django Admin Pro</title>
+    <meta name="description" content="Sign in to your Django Admin Pro dashboard.">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { DEFAULT: '#3b82f6', 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' },
+                        accent:  { DEFAULT: '#8b5cf6', 400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed' },
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+
+    <!-- Google Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        [x-cloak] { display: none !important; }
+
+        /* Animated gradient background */
+        .bg-gradient-animated {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #0f172a 70%, #1e293b 100%);
+            background-size: 400% 400%;
+            animation: gradient-shift 12s ease infinite;
+        }
+        @keyframes gradient-shift {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            animation: float 8s ease-in-out infinite;
+        }
+        .orb-1 {
+            width: 400px; height: 400px;
+            background: #3b82f6;
+            top: -100px; left: -100px;
+            animation-delay: 0s;
+        }
+        .orb-2 {
+            width: 350px; height: 350px;
+            background: #8b5cf6;
+            bottom: -80px; right: -80px;
+            animation-delay: -4s;
+        }
+        .orb-3 {
+            width: 250px; height: 250px;
+            background: #06b6d4;
+            top: 50%; left: 60%;
+            animation-delay: -2s;
+            opacity: 0.15;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50%      { transform: translateY(-30px) scale(1.05); }
+        }
+
+        /* Glassmorphism card */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Input focus glow */
+        .input-glow:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25), 0 0 20px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Button shimmer */
+        .btn-shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-shimmer::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: linear-gradient(
+                to right,
+                rgba(255,255,255,0) 0%,
+                rgba(255,255,255,0.08) 50%,
+                rgba(255,255,255,0) 100%
+            );
+            transform: rotate(30deg);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+        @keyframes shimmer {
+            0%   { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
+        }
+
+        /* Subtle fade-in for the card */
+        .fade-in-up {
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body class="h-full font-sans antialiased bg-gradient-animated text-white overflow-hidden relative">
+    <!-- Decorative orbs -->
+    <div class="orb orb-1" aria-hidden="true"></div>
+    <div class="orb orb-2" aria-hidden="true"></div>
+    <div class="orb orb-3" aria-hidden="true"></div>
+
+    <!-- Main container -->
+    <div class="flex items-center justify-center min-h-screen px-4 relative z-10">
+        <div class="w-full max-w-md fade-in-up">
+
+            <!-- Logo / Brand -->
+            <div class="text-center mb-10">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-accent-500 shadow-lg shadow-primary-500/25 mb-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                    </svg>
+                </div>
+                <h1 class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent">
+                    Django Admin Pro
+                </h1>
+                <p class="mt-2 text-sm text-slate-400">Sign in to your dashboard</p>
+            </div>
+
+            <!-- Login Card -->
+            <div class="glass-card rounded-2xl p-8 shadow-2xl">
+
+                <!-- Error messages -->
+                {% if form.errors %}
+                <div id="login-errors" class="mb-6 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3">
+                    <div class="flex items-start gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400 mt-0.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                        <div class="text-sm text-red-300">
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <form method="post" id="login-form" class="space-y-5" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Email / Username -->
+                    <div>
+                        <label for="id_username" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+                            Email Address
+                        </label>
+                        <div class="relative">
+                            <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                                </svg>
+                            </span>
+                            <input
+                                type="email"
+                                name="username"
+                                id="id_username"
+                                autocomplete="email"
+                                required
+                                placeholder="you@company.com"
+                                value="{{ form.username.value|default:'' }}"
+                                class="input-glow w-full rounded-xl border border-white/10 bg-white/5 py-3 pl-11 pr-4 text-sm text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-primary-500 focus:bg-white/[0.07]"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div x-data="{ showPassword: false }">
+                        <label for="id_password" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+                            Password
+                        </label>
+                        <div class="relative">
+                            <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                                </svg>
+                            </span>
+                            <input
+                                type="password"
+                                :type="showPassword ? 'text' : 'password'"
+                                name="password"
+                                id="id_password"
+                                autocomplete="current-password"
+                                required
+                                placeholder="••••••••"
+                                class="input-glow w-full rounded-xl border border-white/10 bg-white/5 py-3 pl-11 pr-11 text-sm text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-primary-500 focus:bg-white/[0.07]"
+                            >
+                            <!-- Password visibility toggle -->
+                            <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-500 hover:text-slate-300 transition-colors duration-150" aria-label="Toggle password visibility">
+                                <!-- Eye icon (show password) -->
+                                <svg x-show="!showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                <!-- Eye-slash icon (hide password) -->
+                                <svg x-show="showPassword" x-cloak xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12c1.292 4.338 5.31 7.5 10.066 7.5.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Remember me & Forgot -->
+                    <div class="flex items-center justify-between text-sm">
+                        <label class="flex items-center gap-2 cursor-pointer group">
+                            <input type="checkbox" name="remember" id="id_remember"
+                                   class="h-4 w-4 rounded border-white/20 bg-white/5 text-primary-500 focus:ring-primary-500/50 focus:ring-offset-0">
+                            <span class="text-slate-400 group-hover:text-slate-300 transition-colors">Remember me</span>
+                        </label>
+                        <a href="#" class="text-primary-400 hover:text-primary-300 font-medium transition-colors">
+                            Forgot password?
+                        </a>
+                    </div>
+
+                    <!-- Submit -->
+                    <button
+                        type="submit"
+                        id="login-submit"
+                        class="btn-shimmer w-full rounded-xl bg-gradient-to-r from-primary-600 to-accent-600 py-3.5 text-sm font-semibold text-white shadow-lg shadow-primary-500/25 transition-all duration-200 hover:shadow-xl hover:shadow-primary-500/30 hover:from-primary-500 hover:to-accent-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-slate-900 active:scale-[0.98]"
+                    >
+                        Sign In
+                    </button>
+                </form>
+
+                <!-- Divider -->
+                <div class="relative my-7">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-white/10"></div>
+                    </div>
+                    <div class="relative flex justify-center">
+                        <span class="bg-[rgba(15,23,42,0.6)] px-4 text-xs text-slate-500 uppercase tracking-wider">Secure Access</span>
+                    </div>
+                </div>
+
+                <!-- Footer note -->
+                <p class="text-center text-xs text-slate-500">
+                    Protected by enterprise-grade security.
+                    <br>
+                    <span class="text-slate-600">TLS encrypted · Session managed</span>
+                </p>
+            </div>
+
+            <!-- Bottom branding -->
+            <p class="mt-8 text-center text-xs text-slate-600">
+                &copy; {{ year|default:"2026" }} Django Admin Pro. All rights reserved.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

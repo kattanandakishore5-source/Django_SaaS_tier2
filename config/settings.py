@@ -65,7 +65,7 @@ ASGI_APPLICATION = 'config.asgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.sqlite3',
         'NAME': config('DB_NAME', default='django_admin_pro'),
         'USER': config('DB_USER', default='admin'),
         'PASSWORD': config('DB_PASSWORD', default='admin123'),
@@ -98,6 +98,11 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 # Custom User Model
 CUSTOM_USER_EMAIL_FIELD = 'email'
 CUSTOM_USER_USERNAME_FIELD = 'email'
+
+# Authentication Redirects
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/dashboard/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 # REST Framework
 REST_FRAMEWORK = {
@@ -134,6 +139,7 @@ CELERY_TIMEZONE = 'UTC'
 CELERY_ENABLE_UTC = True
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes
+CELERY_TASK_ALWAYS_EAGER = True
 
 # Email Configuration
 EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')

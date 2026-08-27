@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
+from django.views.generic import RedirectView
+from django.contrib.auth.views import LoginView
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
@@ -19,6 +21,8 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
+    path('', RedirectView.as_view(url='/dashboard/'), name='root-redirect'),
+    path('accounts/login/', LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('admin/', admin.site.urls),
     path('api/auth/', include('apps.accounts.urls')),
     path('api/dashboard/', include('apps.dashboard.urls')),
