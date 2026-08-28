@@ -18,17 +18,13 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'corsheaders',
-    'django_celery_beat',
-    'django_celery_results',
     'django_extensions',
     'drf_yasg',
     'django_htmx',
     # Local apps
     'apps.accounts',
     'apps.dashboard',
-    'apps.audit',
     'apps.core',
-    'apps.billing',
 ]
 
 MIDDLEWARE = [
@@ -40,7 +36,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'apps.audit.middleware.AuditLoggingMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -130,19 +125,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
 ]
 
-# Celery Configuration
-CELERY_BROKER_URL = config('REDIS_URL', default='redis://localhost:6379/0')
-CELERY_RESULT_BACKEND = config('REDIS_URL', default='redis://localhost:6379/0')
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'UTC'
-CELERY_ENABLE_UTC = True
-CELERY_TASK_TRACK_STARTED = True
-CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes
-CELERY_TASK_ALWAYS_EAGER = config('CELERY_TASK_ALWAYS_EAGER', default=False, cast=bool)
-CELERY_TASK_STORE_EAGER_RESULT = config('CELERY_TASK_ALWAYS_EAGER', default=False, cast=bool)
-
 # Email Configuration
 EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
 EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
@@ -159,19 +141,6 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
-
-# Audit Logging
-AUDIT_LOG_EXCLUDED_URLS = ['/health/', '/metrics/']
-AUDIT_LOG_EXCLUDED_METHODS = ['GET', 'HEAD', 'OPTIONS']
-
-# Stripe Configuration
-STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY', default='')
-STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', default='')
-
-# Magic Links & 2FA
-MAGIC_LINK_EXPIRY_HOURS = 24
-OTP_LENGTH = 6
-OTP_EXPIRY_MINUTES = 10
 
 # Pagination
 DEFAULT_PAGE_SIZE = 20

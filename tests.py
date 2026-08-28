@@ -1,5 +1,5 @@
-from django.test import TestCase, Client
-from django.urls import reverse
+﻿from django.test import TestCase, Client
+
 from apps.accounts.models import CustomUser
 from apps.dashboard.models import Dashboard
 
@@ -10,7 +10,6 @@ class DashboardTestCase(TestCase):
         self.user = CustomUser.objects.create_user(
             email='test@example.com',
             password='testpass123',
-            role='owner',
         )
         self.client.login(username='test@example.com', password='testpass123')
 
@@ -38,19 +37,11 @@ class DashboardChartTestCase(TestCase):
         self.user = CustomUser.objects.create_user(
             email='test@example.com',
             password='testpass123',
-            role='owner',
         )
         self.client.login(username='test@example.com', password='testpass123')
 
     def test_signups_chart(self):
         response = self.client.get('/api/dashboard/chart-signups/?months=6')
-        self.assertEqual(response.status_code, 200)
-        data = response.json()
-        self.assertIn('labels', data)
-        self.assertIn('data', data)
-
-    def test_role_distribution_chart(self):
-        response = self.client.get('/api/dashboard/chart-role-distribution/')
         self.assertEqual(response.status_code, 200)
         data = response.json()
         self.assertIn('labels', data)

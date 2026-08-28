@@ -1,22 +1,22 @@
+﻿from datetime import timedelta
+
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+
 from apps.accounts.models import CustomUser
-from datetime import timedelta
 
 
 class Command(BaseCommand):
     help = 'Create demo users and data for testing'
 
     def handle(self, *args, **options):
-        self.stdout.write("Creating demo users...")
+        self.stdout.write('Creating demo users...')
 
-        # Owner
         owner, _ = CustomUser.objects.get_or_create(
             email='owner@example.com',
             defaults={
                 'first_name': 'Owner',
                 'last_name': 'User',
-                'role': 'owner',
                 'is_verified': True,
                 'is_active': True,
                 'is_staff': True,
@@ -27,13 +27,11 @@ class Command(BaseCommand):
             owner.save()
             self.stdout.write(self.style.SUCCESS(f'Created owner: {owner.email}'))
 
-        # Manager
         manager, _ = CustomUser.objects.get_or_create(
             email='manager@example.com',
             defaults={
                 'first_name': 'Manager',
                 'last_name': 'User',
-                'role': 'manager',
                 'is_verified': True,
                 'is_active': True,
             }
@@ -43,13 +41,11 @@ class Command(BaseCommand):
             manager.save()
             self.stdout.write(self.style.SUCCESS(f'Created manager: {manager.email}'))
 
-        # Viewer
         viewer, _ = CustomUser.objects.get_or_create(
             email='viewer@example.com',
             defaults={
                 'first_name': 'Viewer',
                 'last_name': 'User',
-                'role': 'viewer',
                 'is_verified': True,
                 'is_active': True,
             }
@@ -59,7 +55,6 @@ class Command(BaseCommand):
             viewer.save()
             self.stdout.write(self.style.SUCCESS(f'Created viewer: {viewer.email}'))
 
-        # Create additional demo users
         for i in range(5):
             email = f'user{i}@example.com'
             user, _ = CustomUser.objects.get_or_create(
@@ -67,7 +62,6 @@ class Command(BaseCommand):
                 defaults={
                     'first_name': f'User{i}',
                     'last_name': 'Demo',
-                    'role': 'viewer',
                     'is_verified': True,
                     'is_active': True,
                     'created_at': timezone.now() - timedelta(days=30-i*5),

@@ -1,15 +1,13 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 
 {% block page_title %}Settings{% endblock %}
 
 {% block content %}
 <div class="max-w-2xl mx-auto space-y-6">
-    <!-- Account Settings -->
     <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
         <h3 class="text-xl font-bold mb-6">Account Settings</h3>
 
         <div class="space-y-6">
-            <!-- Email Notifications -->
             <div class="flex justify-between items-center pb-6 border-b border-gray-200 dark:border-gray-700">
                 <div>
                     <h4 class="font-semibold">Email Notifications</h4>
@@ -21,7 +19,6 @@
                 </label>
             </div>
 
-            <!-- Weekly Digest -->
             <div class="flex justify-between items-center pb-6 border-b border-gray-200 dark:border-gray-700">
                 <div>
                     <h4 class="font-semibold">Weekly Digest</h4>
@@ -33,7 +30,6 @@
                 </label>
             </div>
 
-            <!-- Login Alerts -->
             <div class="flex justify-between items-center">
                 <div>
                     <h4 class="font-semibold">Login Alerts</h4>
@@ -44,78 +40,6 @@
                     <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                 </label>
             </div>
-        </div>
-    </div>
-
-    <!-- Billing -->
-    {% if user.role == 'owner' %}
-    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-        <h3 class="text-xl font-bold mb-6">Billing & Subscription</h3>
-
-        <div class="space-y-6">
-            {% if subscription %}
-            <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h4 class="font-semibold text-blue-900 dark:text-blue-400 capitalize">{{ subscription.plan_name }} Plan</h4>
-                        <div class="flex items-center gap-2 mt-1">
-                            <span class="text-sm text-blue-800 dark:text-blue-300">Status:</span>
-                            <span class="px-2 py-0.5 text-xs font-semibold rounded-full 
-                                {% if subscription.status == 'active' %}bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400
-                                {% elif subscription.status == 'canceled' %}bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400
-                                {% else %}bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400{% endif %} capitalize">
-                                {{ subscription.status }}
-                            </span>
-                        </div>
-                        {% if subscription.current_period_end %}
-                        <p class="text-sm text-blue-700 dark:text-blue-400 mt-2">Next billing date: {{ subscription.current_period_end|date:"F d, Y" }}</p>
-                        {% endif %}
-                    </div>
-                    <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                        Manage Subscription
-                    </button>
-                </div>
-            </div>
-            {% else %}
-            <div class="p-6 bg-gray-50 dark:bg-gray-900/40 rounded-lg border border-dashed border-gray-300 dark:border-gray-700 text-center">
-                <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                </svg>
-                <h4 class="font-semibold text-gray-900 dark:text-white mt-2">No active subscription</h4>
-                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 mb-4">Choose a plan to unlock premium features and start building.</p>
-                <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition-all duration-200">
-                    Subscribe Now
-                </button>
-            </div>
-            {% endif %}
-
-            <div>
-                <h4 class="font-semibold mb-3">Billing History</h4>
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center py-3 border-b border-gray-200 dark:border-gray-700">
-                        <span class="text-sm">Invoice #INV-2024-12</span>
-                        <div class="flex items-center gap-4">
-                            <span class="text-sm">$99.00</span>
-                            <a href="#" class="text-blue-600 hover:text-blue-700 text-sm">Download</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    <!-- Danger Zone -->
-    <div class="bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 p-6">
-        <h3 class="text-xl font-bold text-red-900 dark:text-red-400 mb-6">Danger Zone</h3>
-
-        <div class="space-y-4">
-            <button class="w-full px-4 py-2 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 font-medium">
-                Delete My Account
-            </button>
-            <p class="text-sm text-red-700 dark:text-red-300">
-                Warning: This action cannot be undone. All your data will be permanently deleted.
-            </p>
         </div>
     </div>
 </div>
