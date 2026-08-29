@@ -1,6 +1,6 @@
-# Django Admin Pro - SaaS Dashboard Boilerplate
+# Django Starter - SaaS Dashboard Boilerplate
 
-**Django Admin Pro** is a production-ready SaaS dashboard boilerplate built with Django 4.2, designed to help developers rapidly build customer-facing admin panels. Unlike traditional Django admin themes (like Unfold, Jazzmin), Django Admin Pro escapes the admin jail with custom views, modern authentication, RBAC, and pre-wired analytics.
+**Django Starter** is a production-ready SaaS dashboard boilerplate built with Django 4.2, designed to help developers rapidly build customer-facing admin panels. Unlike traditional Django admin themes (like Unfold, Jazzmin), Django Starter escapes the admin jail with custom views, modern authentication, RBAC, and pre-wired analytics.
 
 ## 🚀 Features
 
@@ -261,7 +261,7 @@ POST /api/auth/api-keys/{id}/regenerate/
 
 ## 🔐 Role-Based Access Control
 
-Django Admin Pro includes three predefined roles:
+Django Starter includes three predefined roles:
 
 | Role | Permissions |
 |------|------------|
@@ -314,11 +314,11 @@ EMAIL_HOST_PASSWORD=your-app-password  # Generate in Google Account Security
 from apps.core.utils import send_email_async
 
 send_email_async.delay(
-    subject='Welcome!',
-    message='Welcome to Django Admin Pro',
-    recipient_list=['user@example.com'],
-    template='welcome',
-    context={'name': 'John'}
+  subject='Welcome!',
+  message='Welcome to Django Starter',
+  recipient_list=['user@example.com'],
+  template='welcome',
+  context={'name': 'John'}
 )
 ```
 

@@ -1,4 +1,4 @@
-# Django Admin Pro - Quick Start Guide
+# Django Starter - Quick Start Guide
 
 Get up and running in 5 minutes!
 

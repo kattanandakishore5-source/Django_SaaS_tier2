@@ -1,6 +1,6 @@
 #!/bin/bash
-echo "Packaging Django Admin Pro for Gumroad..."
-zip -r django_admin_pro.zip . \
+echo "Packaging Django Starter for Gumroad..."
+zip -r django_starter.zip . \
   -x "*.venv*" \
   -x "*__pycache__*" \
   -x "*.git*" \
@@ -9,4 +9,4 @@ zip -r django_admin_pro.zip . \
   -x "*mnt*" \
   -x "*.pytest_cache*" \
   -x "*package_for_gumroad.sh*"
-echo "Packaging complete: django_admin_pro.zip"
+echo "Packaging complete: django_starter.zip"

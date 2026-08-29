@@ -1,4 +1,4 @@
-**Django Admin Pro — Starter Edition**
+**Django Starter — Starter Edition**
 
 Price: $19
 
@@ -6,7 +6,7 @@ Price: $19
 
 # Headline
 
-**Ship your SaaS faster — Django Admin Pro (Starter Edition)** 🚀
+**Ship your SaaS faster — Django Starter (Starter Edition)** 🚀
 
 # The Problem
 
@@ -14,7 +14,7 @@ You waste weekends wiring up auth, dashboards, and deployment scripts instead of
 
 # The Solution
 
-Django Admin Pro — Starter Edition is a lightweight, production-ready Django boilerplate that saves you 40+ hours of setup time. It gives you a clean, modern foundation with authentication, a responsive dashboard, and developer-friendly architecture so you can focus on building value.
+Django Starter — Starter Edition is a lightweight, production-ready Django boilerplate that saves you 40+ hours of setup time. It gives you a clean, modern foundation with authentication, a responsive dashboard, and developer-friendly architecture so you can focus on building value.
 
 # What You Get
 
@@ -38,6 +38,6 @@ Django Admin Pro — Starter Edition is a lightweight, production-ready Django b
 
 # Call to Action
 
-Get started now — grab Django Admin Pro (Starter Edition) for **$19** and skip the boring setup. Build your product, not your scaffold. 💡
+Get started now — grab Django Starter (Starter Edition) for **$19** and skip the boring setup. Build your product, not your scaffold. 💡
 
 [Buy now on Gumroad](https://gumroad.com)

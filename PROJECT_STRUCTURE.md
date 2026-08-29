@@ -1,4 +1,4 @@
-# Django Admin Pro - Complete Project Structure
+# Django Starter - Complete Project Structure
 
 ```
 django-admin-pro/

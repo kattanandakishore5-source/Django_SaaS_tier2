@@ -1,10 +1,10 @@
 @echo off
-REM Django Admin Pro Setup Script for Windows
+REM Django Starter Setup Script for Windows
 
 setlocal enabledelayedexpansion
 
 echo.
-echo 🚀 Django Admin Pro Setup
+echo 🚀 Django Starter Setup
 echo =========================
 echo.
 

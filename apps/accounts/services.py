@@ -38,7 +38,7 @@ def create_user_account(email, password, first_name='', last_name=''):
     )
 
     send_email_async.delay(
-        subject='Welcome to Django Admin Pro!',
+        subject='Welcome to Django Starter!',
         message=f'Thank you for signing up, {first_name}!',
         recipient_list=[email],
         template='welcome',

@@ -10,7 +10,7 @@ from rest_framework import permissions
 
 schema_view = get_schema_view(
     openapi.Info(
-        title='Django Admin Pro API',
+        title='Django Starter API',
         default_version='v1',
         description='Starter dashboard API',
         contact=openapi.Contact(email='kattanandakishore5@gmail.com'),

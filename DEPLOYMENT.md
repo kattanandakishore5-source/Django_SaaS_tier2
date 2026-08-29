@@ -1,6 +1,6 @@
-# Django Admin Pro - Deployment Guide
+# Django Starter - Deployment Guide
 
-This guide covers deploying Django Admin Pro to production environments.
+This guide covers deploying Django Starter to production environments.
 
 ## 🔒 Security Checklist
 
@@ -86,7 +86,7 @@ SECURE_HSTS_PRELOAD=True
 3. **Push to GitHub**
    ```bash
    git add .
-   git commit -m "Initial Django Admin Pro setup"
+   git commit -m "Initial Django Starter setup"
    git push origin main
    ```
 
@@ -175,7 +175,7 @@ SECURE_HSTS_PRELOAD=True
 
    ```ini
    [Unit]
-   Description=Gunicorn Django Admin Pro
+   Description=Gunicorn Django Starter
    After=network.target
    
    [Service]

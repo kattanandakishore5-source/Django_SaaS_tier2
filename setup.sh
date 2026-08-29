@@ -1,9 +1,9 @@
 #!/bin/bash
-# Django Admin Pro Setup Script
+# Django Starter Setup Script
 
 set -e
 
-echo "🚀 Django Admin Pro Setup"
+echo "🚀 Django Starter Setup"
 echo "========================="
 
 # Colors
