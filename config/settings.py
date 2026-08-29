@@ -1,6 +1,29 @@
 import os
 from pathlib import Path
 from decouple import config, Csv
+# Patch for template Context copy compatibility in some Python/Django combos.
+try:
+    from copy import copy as _copy
+    from django.template import context as _django_template_context
+
+    def _basecontext_copy(self):
+        # Create a new empty instance and copy the dicts list
+        duplicate = object.__new__(self.__class__)
+        duplicate.dicts = self.dicts[:]
+        return duplicate
+
+    def _context_copy(self):
+        duplicate = _basecontext_copy(self)
+        # copy render_context if present
+        if hasattr(self, 'render_context'):
+            duplicate.render_context = _copy(self.render_context)
+        return duplicate
+
+    _django_template_context.BaseContext.__copy__ = _basecontext_copy
+    _django_template_context.Context.__copy__ = _context_copy
+except Exception:
+    # If patching fails, continue without breaking settings import.
+    pass
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 

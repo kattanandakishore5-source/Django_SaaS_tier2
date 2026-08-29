@@ -34,7 +34,7 @@ class DashboardViewSet(viewsets.ViewSet):
         }
         return Response(data)
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], url_path='chart-signups')
     def chart_signups(self, request):
         months_back = int(request.query_params.get('months', 6))
         end_date = timezone.now()
