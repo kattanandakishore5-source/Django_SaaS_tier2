@@ -401,7 +401,7 @@ python manage.py collectstatic --noinput --clear
 - Check the main [README.md](README.md)
 - Read [DEPLOYMENT.md](DEPLOYMENT.md) for production setup
 - Open an issue on GitHub
-- Email: support@djangoadminpro.com
+- Email: kattanandakishore5@gmail.com
 
 ---
 

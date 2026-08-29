@@ -13,7 +13,7 @@ schema_view = get_schema_view(
         title='Django Admin Pro API',
         default_version='v1',
         description='Starter dashboard API',
-        contact=openapi.Contact(email='support@djangoadminpro.com'),
+        contact=openapi.Contact(email='kattanandakishore5@gmail.com'),
         license=openapi.License(name='MIT License'),
     ),
     public=True,

@@ -497,7 +497,7 @@ This project is licensed under the MIT License - see LICENSE file for details.
 
 For questions or issues:
 - GitHub Issues: [Link to issues]
-- Email: support@djangoadminpro.com
+- Email: kattanandakishore5@gmail.com
 - Documentation: [Link to docs]
 
 ---
