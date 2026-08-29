@@ -1,25 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Django Admin Pro{% endblock %}</title>
     
+    <script src="{% static 'js/tailwind-config.js' %}"></script>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: { DEFAULT: '#3b82f6', 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' },
-                        accent:  { DEFAULT: '#8b5cf6', 400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed' },
-                    }
-                }
-            }
-        }
-    </script>
 
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -30,15 +19,7 @@
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 
-    <style>
-        :root {
-            --color-primary: #3b82f6;
-            --color-secondary: #8b5cf6;
-            --color-success: #10b981;
-            --color-danger: #ef4444;
-            --color-warning: #f59e0b;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
 
     {% block extra_css %}{% endblock %}
 </head>
