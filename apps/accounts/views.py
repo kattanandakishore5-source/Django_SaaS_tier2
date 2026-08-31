@@ -1,10 +1,20 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect, render
+from django.urls import reverse
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from .models import CustomUser
+from .forms import (
+    CustomUserCreationForm,
+    EmailAuthenticationForm,
+    PasswordResetConfirmForm,
+    PasswordResetRequestForm,
+)
+from .models import CustomUser, PasswordReset
 from .serializers import CustomUserSerializer
 from .services import (
     InvalidTokenError,
@@ -14,6 +24,95 @@ from .services import (
     initiate_password_reset,
     reset_password_with_token,
 )
+
+
+def root_redirect(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard_home')
+    return redirect('login')
+
+
+def signup_view(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard_home')
+
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, 'Your account has been created successfully.')
+            return redirect('dashboard_home')
+    else:
+        form = CustomUserCreationForm()
+
+    return render(request, 'registration/signup.html', {'form': form})
+
+
+def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard_home')
+
+    if request.method == 'POST':
+        form = EmailAuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            login(request, form.get_user())
+            next_url = request.POST.get('next') or 'dashboard_home'
+            return redirect(next_url)
+    else:
+        form = EmailAuthenticationForm(request)
+
+    return render(request, 'registration/login.html', {'form': form})
+
+
+@login_required
+def logout_view(request):
+    if request.method == 'POST':
+        logout(request)
+        messages.success(request, 'You have been signed out.')
+    return redirect('login')
+
+
+def forgot_password_view(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard_home')
+
+    if request.method == 'POST':
+        form = PasswordResetRequestForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            base_url = request.build_absolute_uri('/accounts/reset/')
+            initiate_password_reset(email, base_url)
+            messages.success(request, 'If an account exists for that email, a reset link has been sent.')
+            return redirect('password_reset_request')
+    else:
+        form = PasswordResetRequestForm()
+
+    return render(request, 'registration/forgot_password.html', {'form': form})
+
+
+def password_reset_confirm_view(request, token):
+    if request.user.is_authenticated:
+        return redirect('dashboard_home')
+
+    try:
+        reset = PasswordReset.objects.get(token=token)
+    except PasswordReset.DoesNotExist:
+        reset = None
+
+    if reset is None or not reset.is_valid():
+        return render(request, 'registration/reset_password.html', {'validlink': False})
+
+    if request.method == 'POST':
+        form = PasswordResetConfirmForm(request.POST)
+        if form.is_valid():
+            reset_password_with_token(token, form.cleaned_data['new_password1'])
+            messages.success(request, 'Your password has been reset successfully. Please sign in.')
+            return redirect('login')
+    else:
+        form = PasswordResetConfirmForm()
+
+    return render(request, 'registration/reset_password.html', {'form': form, 'validlink': True})
 
 
 class AuthViewSet(viewsets.ViewSet):

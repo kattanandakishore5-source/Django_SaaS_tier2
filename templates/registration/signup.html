@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up — Django Starter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-full font-sans antialiased bg-slate-950 text-white">
+    <div class="flex items-center justify-center min-h-screen px-4">
+        <div class="w-full max-w-lg rounded-2xl border border-white/10 bg-slate-900/80 p-8 shadow-xl">
+            <div class="mb-8 text-center">
+                <h1 class="text-3xl font-bold">Create your account</h1>
+                <p class="mt-2 text-sm text-slate-400">Start managing your dashboard today.</p>
+            </div>
+
+            {% if form.errors %}
+            <div class="mb-6 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="post" class="space-y-5">
+                {% csrf_token %}
+                <div class="grid gap-5 sm:grid-cols-2">
+                    <div>
+                        <label for="id_first_name" class="mb-2 block text-sm font-medium text-slate-300">First name</label>
+                        <input id="id_first_name" name="first_name" type="text" value="{{ form.first_name.value|default:'' }}" class="w-full rounded-xl border border-white/10 bg-slate-800 px-4 py-3 text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label for="id_last_name" class="mb-2 block text-sm font-medium text-slate-300">Last name</label>
+                        <input id="id_last_name" name="last_name" type="text" value="{{ form.last_name.value|default:'' }}" class="w-full rounded-xl border border-white/10 bg-slate-800 px-4 py-3 text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="id_email" class="mb-2 block text-sm font-medium text-slate-300">Email address</label>
+                    <input id="id_email" name="email" type="email" required value="{{ form.email.value|default:'' }}" class="w-full rounded-xl border border-white/10 bg-slate-800 px-4 py-3 text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label for="id_password1" class="mb-2 block text-sm font-medium text-slate-300">Password</label>
+                    <input id="id_password1" name="password1" type="password" required class="w-full rounded-xl border border-white/10 bg-slate-800 px-4 py-3 text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label for="id_password2" class="mb-2 block text-sm font-medium text-slate-300">Confirm password</label>
+                    <input id="id_password2" name="password2" type="password" required class="w-full rounded-xl border border-white/10 bg-slate-800 px-4 py-3 text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none">
+                </div>
+
+                <button type="submit" class="w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-500">Create account</button>
+            </form>
+
+            <p class="mt-6 text-center text-sm text-slate-400">
+                Already have an account?
+                <a href="{% url 'login' %}" class="font-medium text-blue-400 hover:text-blue-300">Sign in</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

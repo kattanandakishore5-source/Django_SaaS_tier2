@@ -172,8 +172,11 @@
                 </div>
                 {% endif %}
 
-                <form method="post" id="login-form" class="space-y-5" novalidate>
+                <form method="post" action="{% url 'login' %}" id="login-form" class="space-y-5" novalidate>
                     {% csrf_token %}
+                    {% if next %}
+                        <input type="hidden" name="next" value="{{ next }}">
+                    {% endif %}
 
                     <!-- Email / Username -->
                     <div>
@@ -242,7 +245,7 @@
                                    class="h-4 w-4 rounded border-white/20 bg-white/5 text-primary-500 focus:ring-primary-500/50 focus:ring-offset-0">
                             <span class="text-slate-400 group-hover:text-slate-300 transition-colors">Remember me</span>
                         </label>
-                        <a href="#" class="text-primary-400 hover:text-primary-300 font-medium transition-colors">
+                        <a href="{% url 'password_reset_request' %}" class="text-primary-400 hover:text-primary-300 font-medium transition-colors">
                             Forgot password?
                         </a>
                     </div>
@@ -267,8 +270,13 @@
                     </div>
                 </div>
 
+                <div class="mt-6 text-center text-sm text-slate-300">
+                    Need an account?
+                    <a href="{% url 'signup' %}" class="font-semibold text-primary-400 hover:text-primary-300">Sign up</a>
+                </div>
+
                 <!-- Footer note -->
-                <p class="text-center text-xs text-slate-500">
+                <p class="text-center text-xs text-slate-500 mt-6">
                     Protected by enterprise-grade security.
                     <br>
                     <span class="text-slate-600">TLS encrypted · Session managed</span>
