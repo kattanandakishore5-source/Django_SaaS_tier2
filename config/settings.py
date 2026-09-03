@@ -1,6 +1,11 @@
-import os
+﻿import os
+import sys
 from pathlib import Path
 from decouple import config, Csv
+
+# Testing flag for runtime behavior adjustments in unit tests
+TESTING = any('test' in str(a) for a in sys.argv)
+
 # Patch for template Context copy compatibility in some Python/Django combos.
 try:
     from copy import copy as _copy
@@ -42,13 +47,23 @@ INSTALLED_APPS = [
     'django_filters',
     'corsheaders',
     'django_extensions',
-    'drf_yasg',
+    # 'drf_yasg' intentionally conditionally loaded below to avoid import-time issues in test environments
+
     'django_htmx',
     # Local apps
     'apps.accounts',
     'apps.dashboard',
     'apps.core',
+    'apps.audit',
 ]
+
+# Conditionally enable drf_yasg only if the package is importable (prevents pkg_resources import errors in minimal test envs)
+try:
+    import drf_yasg  # type: ignore
+    INSTALLED_APPS.append('drf_yasg')
+except Exception:
+    # drf_yasg not available in this environment (ok for unit tests)
+    pass
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -57,6 +72,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'apps.audit.middleware.AuditLoggingMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -156,6 +172,18 @@ EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 
+# Celery / Broker configuration
+# Pull from environment with safe defaults for local development.
+CELERY_BROKER_URL = config('CELERY_BROKER_URL', default='redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND', default=CELERY_BROKER_URL)
+# Use JSON-only serialization for safety
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['json']
+# Align Celery timezone with Django
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_ENABLE_UTC = True
+
 # Security
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
@@ -197,3 +225,6 @@ if not DEBUG:
         raise ImproperlyConfigured("SECRET_KEY must be configured in production.")
     if DATABASES['default']['PASSWORD'] == 'admin123':
         raise ImproperlyConfigured("DB_PASSWORD must be configured in production.")
+
+
+

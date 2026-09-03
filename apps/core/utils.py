@@ -7,25 +7,31 @@ import json
 from io import StringIO
 
 
-def send_email_async(subject, message, recipient_list, template=None, context=None):
-    """Send email synchronously for the starter boilerplate."""
-    try:
-        html_message = None
-        if template and context:
-            html_message = render_to_string(f'emails/{template}.html', context)
-            message = strip_tags(html_message)
+# Prefer a Celery task when available; fall back to a synchronous function for environments
+# where Celery isn't present (tests or simple local installs).
+try:
+    # apps.core.tasks defines a shared_task named send_email_async
+    from .tasks import send_email_async  # type: ignore
+except Exception:
+    def send_email_async(subject, message, recipient_list, template=None, context=None):
+        """Fallback synchronous email sender."""
+        try:
+            html_message = None
+            if template and context:
+                html_message = render_to_string(f'emails/{template}.html', context)
+                message = strip_tags(html_message)
 
-        send_mail(
-            subject,
-            message,
-            settings.EMAIL_HOST_USER,
-            recipient_list,
-            html_message=html_message,
-            fail_silently=False,
-        )
-        return f"Email sent to {recipient_list}"
-    except Exception as exc:
-        return f"Error sending email: {exc}"
+            send_mail(
+                subject,
+                message,
+                settings.EMAIL_HOST_USER,
+                recipient_list,
+                html_message=html_message,
+                fail_silently=False,
+            )
+            return f"Email sent to {recipient_list}"
+        except Exception as exc:
+            return f"Error sending email: {exc}"
 
 
 class DataExporter:
