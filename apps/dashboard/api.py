@@ -1,22 +1,27 @@
-﻿from datetime import timedelta
+from datetime import timedelta
 
 from django.db.models import Count, Q
 from django.db.models.functions import TruncDate
 from django.utils import timezone
 from rest_framework import viewsets
-from rest_framework.decorators import action
+from rest_framework.decorators import action, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from apps.accounts.models import CustomUser
+from apps.billing.entitlements import (
+    FEATURE_ADVANCED_CHARTS,
+    FEATURE_BASIC_ANALYTICS,
+    HasFeatureAccess,
+)
 
 
 class DashboardViewSet(viewsets.ViewSet):
-    """Dashboard API endpoints for core analytics."""
+    """Dashboard API endpoints for core analytics with tier-based entitlements."""
 
     permission_classes = [IsAuthenticated]
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated, HasFeatureAccess(FEATURE_BASIC_ANALYTICS)])
     def stats(self, request):
         stats = CustomUser.objects.aggregate(
             total=Count('id'),
@@ -34,7 +39,7 @@ class DashboardViewSet(viewsets.ViewSet):
         }
         return Response(data)
 
-    @action(detail=False, methods=['get'], url_path='chart-signups')
+    @action(detail=False, methods=['get'], url_path='chart-signups', permission_classes=[IsAuthenticated, HasFeatureAccess(FEATURE_ADVANCED_CHARTS)])
     def chart_signups(self, request):
         months_back = int(request.query_params.get('months', 6))
         end_date = timezone.now()

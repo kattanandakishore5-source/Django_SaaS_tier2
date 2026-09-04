@@ -1,7 +1,8 @@
-﻿from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
 from apps.accounts.models import CustomUser
+from apps.billing.entitlements import FEATURE_USER_MANAGEMENT, require_feature
 
 
 @login_required
@@ -11,10 +12,12 @@ def dashboard_home(request):
 
 
 @login_required
+@require_feature(FEATURE_USER_MANAGEMENT)
 def dashboard_users(request):
     users = CustomUser.objects.all()
     context = {'users': users, 'total': users.count()}
     return render(request, 'dashboard/users.html', context)
+
 
 
 @login_required

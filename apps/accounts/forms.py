@@ -1,4 +1,4 @@
-﻿from django import forms
+from django import forms
 from django.contrib.auth import forms as auth_forms
 from django.contrib.auth.forms import UserCreationForm
 
@@ -64,3 +64,30 @@ class CustomUserChangeForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ('email', 'first_name', 'last_name', 'avatar', 'phone_number', 'bio')
+
+
+class MagicLinkRequestForm(forms.Form):
+    email = forms.EmailField(
+        label='Email Address',
+        widget=forms.EmailInput(attrs={'autofocus': True, 'placeholder': 'you@example.com'}),
+    )
+
+
+class TwoFactorVerifyForm(forms.Form):
+    code = forms.CharField(
+        label='Verification Code',
+        max_length=6,
+        min_length=6,
+        widget=forms.TextInput(attrs={'autofocus': True, 'placeholder': '123456', 'autocomplete': 'one-time-code'}),
+    )
+
+
+class TwoFactorSetupForm(forms.Form):
+    secret = forms.CharField(widget=forms.HiddenInput())
+    code = forms.CharField(
+        label='Verification Code',
+        max_length=6,
+        min_length=6,
+        widget=forms.TextInput(attrs={'autofocus': True, 'placeholder': '123456', 'autocomplete': 'one-time-code'}),
+    )
+

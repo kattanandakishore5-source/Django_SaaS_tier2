@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup 2FA — Django Starter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-full font-sans antialiased bg-slate-950 text-white">
+    <div class="flex items-center justify-center min-h-screen px-4 py-8">
+        <div class="w-full max-w-lg rounded-2xl border border-white/10 bg-slate-900/80 p-8 shadow-xl">
+            <div class="mb-6 text-center">
+                <h1 class="text-3xl font-bold">Setup Two-Factor Authentication</h1>
+                <p class="mt-2 text-sm text-slate-400">Scan the QR code with your authenticator app (Google Authenticator, Authy, 1Password, etc.).</p>
+            </div>
+
+            {% if messages %}
+                <div class="mb-6 rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-200">
+                    {% for message in messages %}<p>{{ message }}</p>{% endfor %}
+                </div>
+            {% endif %}
+
+            {% if form.errors %}
+                <div class="mb-6 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}<p>{{ error }}</p>{% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="mb-6 flex flex-col items-center justify-center rounded-xl bg-white p-4">
+                <img src="data:image/png;base64,{{ qr_code }}" alt="2FA QR Code" class="h-48 w-48">
+            </div>
+
+            <div class="mb-6 rounded-xl border border-white/10 bg-slate-800 p-4 text-center">
+                <p class="text-xs text-slate-400">Manual Setup Key:</p>
+                <p class="mt-1 font-mono text-sm font-bold tracking-widest text-blue-400 select-all">{{ secret }}</p>
+            </div>
+
+            <form method="post" class="space-y-5">
+                {% csrf_token %}
+                <input type="hidden" name="secret" value="{{ secret }}">
+                <div>
+                    <label for="id_code" class="mb-2 block text-sm font-medium text-slate-300">Enter 6-digit Verification Code</label>
+                    <input id="id_code" name="code" type="text" maxlength="6" required autocomplete="one-time-code" placeholder="123456" class="w-full rounded-xl border border-white/10 bg-slate-800 px-4 py-3 text-center text-xl font-mono tracking-widest text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none">
+                </div>
+
+                <button type="submit" class="w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-500">Enable 2FA</button>
+            </form>
+
+            <p class="mt-6 text-center text-sm text-slate-400">
+                <a href="{% url 'dashboard_profile' %}" class="font-medium text-slate-400 hover:text-white">Cancel</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,7 +1,8 @@
-﻿from django.test import TestCase, Client
+from django.test import TestCase, Client
 
 from apps.accounts.models import CustomUser
 from apps.dashboard.models import Dashboard
+from apps.billing.models import Subscription
 
 
 class DashboardTestCase(TestCase):
@@ -10,6 +11,12 @@ class DashboardTestCase(TestCase):
         self.user = CustomUser.objects.create_user(
             email='test@example.com',
             password='testpass123',
+        )
+        Subscription.objects.create(
+            user=self.user,
+            stripe_subscription_id='sub_test_dash_01',
+            stripe_price_id='price_basic_test',
+            status='active',
         )
         self.client.login(username='test@example.com', password='testpass123')
 
@@ -37,6 +44,12 @@ class DashboardChartTestCase(TestCase):
         self.user = CustomUser.objects.create_user(
             email='test@example.com',
             password='testpass123',
+        )
+        Subscription.objects.create(
+            user=self.user,
+            stripe_subscription_id='sub_test_chart_01',
+            stripe_price_id='price_pro_test',
+            status='active',
         )
         self.client.login(username='test@example.com', password='testpass123')
 

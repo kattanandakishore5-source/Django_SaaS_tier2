@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Billing & Subscriptions{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-8">
+
+    <!-- Header Section -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">Billing & Plans</h1>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage your subscription, plan tiers, and payment methods.</p>
+        </div>
+    </div>
+
+    {% if messages %}
+        <div class="space-y-2">
+            {% for message in messages %}
+                <div class="p-4 rounded-xl border border-blue-500/20 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 text-sm">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Current Subscription Card -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
+        <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Current Subscription</h2>
+
+        <div class="flex items-center justify-between p-4 rounded-xl bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700">
+            <div>
+                <p class="font-semibold text-gray-900 dark:text-white">
+                    Status:
+                    {% if has_active %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">Active ({{ subscription.status|title }})</span>
+                    {% else %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-200 text-gray-800 dark:bg-gray-600 dark:text-gray-300">No Active Subscription</span>
+                    {% endif %}
+                </p>
+                {% if subscription %}
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Subscription ID: <span class="font-mono text-gray-700 dark:text-gray-300">{{ subscription.stripe_subscription_id }}</span></p>
+                    {% if subscription.current_period_end %}
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Current Period Ends: {{ subscription.current_period_end|date:"F j, Y, P" }}</p>
+                    {% endif %}
+                {% else %}
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Choose a plan below to unlock premium features.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing Tiers -->
+    <div class="grid md:grid-cols-2 gap-6">
+
+        <!-- Basic Plan -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm flex flex-col justify-between">
+            <div>
+                <span class="text-xs font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400">Starter</span>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">Basic Plan</h3>
+                <p class="text-3xl font-extrabold text-gray-900 dark:text-white mt-3">$19 <span class="text-sm font-normal text-gray-500">/ month</span></p>
+                <ul class="mt-6 space-y-3 text-sm text-gray-600 dark:text-gray-300">
+                    <li class="flex items-center gap-2">✓ Core API Access</li>
+                    <li class="flex items-center gap-2">✓ Standard Audit Logging</li>
+                    <li class="flex items-center gap-2">✓ 24/7 Email Support</li>
+                </ul>
+            </div>
+
+            <form method="post" action="{% url 'billing_checkout' %}" class="mt-8">
+                {% csrf_token %}
+                <input type="hidden" name="plan_id" value="basic">
+                <button type="submit" class="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition">
+                    Subscribe to Basic
+                </button>
+            </form>
+        </div>
+
+        <!-- Pro Plan -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl border-2 border-indigo-500 dark:border-indigo-500 p-6 shadow-lg flex flex-col justify-between relative">
+            <span class="absolute -top-3 right-6 bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Popular</span>
+            <div>
+                <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Enterprise</span>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">Pro Plan</h3>
+                <p class="text-3xl font-extrabold text-gray-900 dark:text-white mt-3">$49 <span class="text-sm font-normal text-gray-500">/ month</span></p>
+                <ul class="mt-6 space-y-3 text-sm text-gray-600 dark:text-gray-300">
+                    <li class="flex items-center gap-2">✓ Unlimited API Access</li>
+                    <li class="flex items-center gap-2">✓ Real-time Immutable Audit Logs</li>
+                    <li class="flex items-center gap-2">✓ Priority 24/7 Support & 2FA</li>
+                </ul>
+            </div>
+
+            <form method="post" action="{% url 'billing_checkout' %}" class="mt-8">
+                {% csrf_token %}
+                <input type="hidden" name="plan_id" value="pro">
+                <button type="submit" class="w-full py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm transition">
+                    Subscribe to Pro
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

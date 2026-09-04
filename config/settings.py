@@ -1,4 +1,4 @@
-﻿import os
+import os
 import sys
 from pathlib import Path
 from decouple import config, Csv
@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'apps.dashboard',
     'apps.core',
     'apps.audit',
+    'apps.billing',
 ]
 
 # Conditionally enable drf_yasg only if the package is importable (prevents pkg_resources import errors in minimal test envs)
@@ -72,10 +73,12 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'apps.accounts.middleware.Pending2FAMiddleware',
     'apps.audit.middleware.AuditLoggingMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'config.urls'
 
@@ -98,16 +101,20 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 ASGI_APPLICATION = 'config.asgi.application'
 
+DB_HOST_VAL = config('DB_HOST', default='')
+DB_ENGINE_VAL = config('DB_ENGINE', default='django.db.backends.postgresql' if DB_HOST_VAL else 'django.db.backends.sqlite3')
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': config('DB_NAME', default='django_admin_pro'),
+        'ENGINE': DB_ENGINE_VAL,
+        'NAME': config('DB_NAME', default=str(BASE_DIR / 'db.sqlite3') if 'sqlite' in DB_ENGINE_VAL else 'django_admin_pro'),
         'USER': config('DB_USER', default='admin'),
         'PASSWORD': config('DB_PASSWORD', default='admin123'),
-        'HOST': config('DB_HOST', default='localhost'),
+        'HOST': DB_HOST_VAL if DB_HOST_VAL else 'localhost',
         'PORT': config('DB_PORT', default='5432'),
     }
 }
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -225,6 +232,17 @@ if not DEBUG:
         raise ImproperlyConfigured("SECRET_KEY must be configured in production.")
     if DATABASES['default']['PASSWORD'] == 'admin123':
         raise ImproperlyConfigured("DB_PASSWORD must be configured in production.")
+
+# Stripe & Billing Configuration
+STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY', default='pk_test_mock')
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', default='sk_test_mock')
+STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOK_SECRET', default='whsec_mock')
+STRIPE_PRICE_BASIC = config('STRIPE_PRICE_BASIC', default='price_basic_test')
+STRIPE_PRICE_PRO = config('STRIPE_PRICE_PRO', default='price_pro_test')
+
+# Magic Link Configuration
+MAGIC_LINK_EXPIRY_MINUTES = config('MAGIC_LINK_EXPIRY_MINUTES', default=15, cast=int)
+
 
 
 

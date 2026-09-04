@@ -1,4 +1,4 @@
-﻿from django.conf import settings
+from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
@@ -25,14 +25,23 @@ try:
 except Exception:
     schema_view = None
 
+from django.http import JsonResponse
+
+def health_check(request):
+    return JsonResponse({'status': 'ok'})
+
 urlpatterns = [
     path('', root_redirect, name='root-redirect'),
+    path('health/', health_check, name='health-check'),
     path('accounts/', include('apps.accounts.browser_urls')),
     path('admin/', admin.site.urls),
+
+    path('billing/', include('apps.billing.urls')),
     path('api/auth/', include('apps.accounts.urls')),
     path('api/dashboard/', include('apps.dashboard.urls')),
     path('dashboard/', include('apps.dashboard.views_urls')),
 ]
+
 
 # Only add docs routes if schema_view is available
 if schema_view is not None:

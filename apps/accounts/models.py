@@ -35,6 +35,8 @@ class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=20, blank=True)
     bio = models.TextField(blank=True)
     is_verified = models.BooleanField(default=False)
+    is_2fa_enabled = models.BooleanField(default=False)
+    totp_secret = models.CharField(max_length=64, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -66,3 +68,22 @@ class PasswordReset(models.Model):
 
     def __str__(self):
         return f"Password reset for {self.user.email}"
+
+
+class MagicLinkToken(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='magic_link_tokens')
+    token = models.CharField(max_length=255, unique=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    used = models.BooleanField(default=False)
+
+    def is_valid(self):
+        return not self.used and timezone.now() < self.expires_at
+
+    @staticmethod
+    def generate_token():
+        return secrets.token_urlsafe(32)
+
+    def __str__(self):
+        return f"Magic link for {self.user.email}"
+

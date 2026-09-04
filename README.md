@@ -430,40 +430,26 @@ coverage report
 ### Production Checklist
 
 ```bash
-# 1. Set DEBUG=False
-DEBUG=False
+# 1. Prepare Environment Variables
+cp .env.example .env
+# Edit .env with your real production secrets (SECRET_KEY, DB_PASSWORD, STRIPE_KEYS, etc.)
+# Set DEBUG=False
+# Ensure ALLOWED_HOSTS includes your production domain
 
-# 2. Generate new SECRET_KEY
-python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
+# 2. Build the Production Docker Image
+docker compose build
 
-# 3. Enable HTTPS
-SECURE_SSL_REDIRECT=True
-SESSION_COOKIE_SECURE=True
-CSRF_COOKIE_SECURE=True
+# 3. Start the Services (Django, Postgres, Redis, Celery)
+docker compose up -d
 
-# 4. Collect static files
-python manage.py collectstatic --noinput
+# 4. Verify Services are Running
+docker compose ps
 
-# 5. Run migrations
-python manage.py migrate
+# 5. Run Database Migrations (Handled automatically by entrypoint.sh, but can be forced)
+docker compose exec web python manage.py migrate
 
-# 6. Use production server (not runserver)
-gunicorn config.wsgi:application --bind 0.0.0.0:8000
-```
-
-### Docker Production Build
-
-```bash
-# Build production image
-docker build -t django-admin-pro:latest .
-
-# Run with environment
-docker run -d \
-  --name django-admin-pro \
-  -e DEBUG=False \
-  -e SECRET_KEY=your-key \
-  -p 8000:8000 \
-  django-admin-pro:latest
+# 6. Create a Superuser
+docker compose exec web python manage.py createsuperuser
 ```
 
 ---

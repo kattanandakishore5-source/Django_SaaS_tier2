@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 
 {% block page_title %}Profile{% endblock %}
 
@@ -69,7 +69,27 @@
                     Update Password
                 </button>
             </form>
+        <hr class="my-8 border-gray-200 dark:border-gray-700">
+
+        <div>
+            <h3 class="text-xl font-bold mb-4">Two-Factor Authentication (2FA)</h3>
+            <div class="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+                <div>
+                    <p class="font-medium text-sm">Status: 
+                        {% if user.is_2fa_enabled %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">Enabled</span>
+                        {% else %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300">Disabled</span>
+                        {% endif %}
+                    </p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Protect your account with TOTP authenticator apps.</p>
+                </div>
+                {% if not user.is_2fa_enabled %}
+                    <a href="{% url '2fa_setup' %}" class="px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 font-medium transition">Setup 2FA</a>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>
 {% endblock %}
+

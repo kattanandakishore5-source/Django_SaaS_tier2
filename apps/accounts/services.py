@@ -1,12 +1,11 @@
-﻿from datetime import timedelta
+from datetime import timedelta
 
 from django.utils import timezone
 from django.db import transaction
 
 import apps.core.utils as core_utils
-from .models import CustomUser, PasswordReset
+from .models import CustomUser, PasswordReset, MagicLinkToken
 from django.conf import settings
-
 
 
 class AccountServiceError(Exception):
@@ -105,3 +104,63 @@ def reset_password_with_token(token, new_password):
     user.set_password(new_password)
     user.save()
     return user
+
+
+def initiate_magic_link(email, base_url):
+    """
+    Generate single-use, time-limited magic link token and dispatch email asynchronously.
+    Returns True regardless of user existence to prevent user enumeration attacks.
+    """
+    try:
+        user = CustomUser.objects.get(email=email)
+    except CustomUser.DoesNotExist:
+        # Uniform response to prevent email enumeration
+        return True
+
+    # Invalidate previous tokens
+    MagicLinkToken.objects.filter(user=user).delete()
+
+    token = MagicLinkToken.generate_token()
+    expiry_minutes = getattr(settings, 'MAGIC_LINK_EXPIRY_MINUTES', 15)
+    MagicLinkToken.objects.create(
+        user=user,
+        token=token,
+        expires_at=timezone.now() + timedelta(minutes=expiry_minutes),
+    )
+
+    magic_url = f"{base_url.rstrip('/')}/{token}/"
+
+    if getattr(settings, 'TESTING', False):
+        core_utils.send_email_async.delay(
+            subject='Your Secure Magic Login Link',
+            message=f'Click the link to log in: {magic_url}',
+            recipient_list=[email],
+        )
+    else:
+        transaction.on_commit(lambda: core_utils.send_email_async.delay(
+            subject='Your Secure Magic Login Link',
+            message=f'Click the link to log in: {magic_url}',
+            recipient_list=[email],
+        ))
+    return True
+
+
+def verify_magic_link_token(token):
+    """
+    Validate magic link token, ensure single-use, and return user.
+    """
+    try:
+        magic_token = MagicLinkToken.objects.get(token=token)
+    except MagicLinkToken.DoesNotExist:
+        raise InvalidTokenError('Invalid or expired magic link')
+
+    if magic_token.used:
+        raise InvalidTokenError('Magic link has already been used')
+
+    if timezone.now() >= magic_token.expires_at:
+        raise TokenExpiredError('Magic link has expired')
+
+    magic_token.used = True
+    magic_token.save()
+    return magic_token.user
+

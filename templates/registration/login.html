@@ -270,10 +270,19 @@
                     </div>
                 </div>
 
-                <div class="mt-6 text-center text-sm text-slate-300">
-                    Need an account?
-                    <a href="{% url 'signup' %}" class="font-semibold text-primary-400 hover:text-primary-300">Sign up</a>
+                <div class="mt-6 text-center text-sm text-slate-300 space-y-2">
+                    <div>
+                        <a href="{% url 'magic_link_request' %}" class="inline-flex items-center gap-1.5 font-medium text-blue-400 hover:text-blue-300 transition-colors">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            Sign in with Magic Link (Passwordless)
+                        </a>
+                    </div>
+                    <div>
+                        Need an account?
+                        <a href="{% url 'signup' %}" class="font-semibold text-primary-400 hover:text-primary-300">Sign up</a>
+                    </div>
                 </div>
+
 
                 <!-- Footer note -->
                 <p class="text-center text-xs text-slate-500 mt-6">
