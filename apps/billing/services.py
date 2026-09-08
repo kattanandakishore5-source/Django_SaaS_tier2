@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone as dt_timezone
 import stripe
 from django.conf import settings
 from django.db import transaction
@@ -174,7 +174,7 @@ def _handle_subscription_updated(sub_obj):
     current_period_end = None
     if period_end_timestamp:
         try:
-            current_period_end = datetime.fromtimestamp(period_end_timestamp, tz=timezone.utc)
+            current_period_end = datetime.fromtimestamp(period_end_timestamp, tz=dt_timezone.utc)
         except Exception:
             current_period_end = None
 
